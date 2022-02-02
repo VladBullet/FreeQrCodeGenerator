@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreeQrCodeGenerator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/css/bootstrap.min.css" integrity="sha512-T584yQ/tdRR5QwOpfvDfVQUidzfgc2339Lc8uBDtcp/wYu80d7jwBgAxbyMh0a9YM9F8N3tdErpFI8iaGx6x5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" href="#">Free QrCodeGenerator</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#">Generate QrCode</a>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="container">
+                <div id="HeaderAlert" class="alert" role="alert"></div>
+                <h3>Welcome! This is a free tool for you. </h3>
+                <div class="row">
+                    <div class="container col-md-6 col-xs-12" style="text-align:center; display:inline-block">
+                        <div class="row" style="width:100%;">
+                            <input id="inputText" class="form-control qrInputs col-md-12 col-xs-12" type="text" name="qrInputs" placeholder="Your input text/link..." />
+                        </div>
+                        <div class="row" style="width:100%">
+                            <input id="textpreview" class="form-control col-md-8 col-xs-12" type="text" name="name" value="" readonly="readonly" />
+                            <button id="btnGenerate" class="btn btn-outline-success col-md-4 col-xs-12">Generate</button>
+                        </div>
+                    </div>
+                    <div class="container col-md-6 col-xs-12" style="text-align:center">
+                        <div class="qrCodeDiv" style="display:inline-block">
+                            <div id="demoQr" style="display:inline-block; margin:10px auto;"></div>
+                        </div>
+                        <div class="toBeInvisible col-md-12 col-xs-12" style="text-align: center;"> 
+                            <button id="btnClear" class=" toBeInvisible btn btn-outline-warning col-md-6 col-xs-12">Clear image</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - QrCodeGenerator - @simpForJs</a>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="~/lib/jquery/dist/jquery.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/js/bootstrap.min.js" integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./site.js" ></script>
+    <script src="./qrcode.js" ></script>
+    <script type="text/javascript">
+        // Get the input box
+        var inputs = $("#inputText");
+        let timeout = null;
+        let qrText = null;
+        var QrExists = false;
+        let previewText = null;
+    
+        var QrCodeMatrix = new QRCode($("#demoQr"), "");
+        $("#demoQr").addClass("invisible");
+        $(".toBeInvisible").addClass("invisible");
+
+        // Listen for keystroke events
+        inputs.on('keyup', function (e) {
+            inputValue = $("#inputText").val();
+    
+           AppendFullQRText(inputValue);
+    
+            clearTimeout(timeout);
+            timeout = setTimeout(function () {
+            }, 1000);
+        });
+    
+        inputs.on('change', function (e) {
+            inputValue = $("#inputText").val();
+            
+            AppendFullQRText(inputValue);
+            if (inputValue == "")
+                $("#textpreview").val("");
+            clearTimeout(timeout);
+            timeout = setTimeout(function () {
+            }, 1000);
+    
+        });
+    
+        function AppendFullQRText(input) {
+          
+            previewText = input;
+            qrText =input;
+            $("#textpreview").val(previewText);
+    
+    
+        };
+        function download(file, img) {
+    
+            //creating an invisible element
+            var element = document.createElement('a');
+            element.setAttribute('href', img);
+            element.setAttribute('download', file);
+    
+            document.body.appendChild(element);
+    
+            //onClick property
+            element.click();
+    
+            document.body.removeChild(element);
+        };
+    
+        $(document).ready(function () {
+    
+            $("#btnGenerate").on("click", function (e) {
+                try {
+                    e.preventDefault();
+                    if (!QrExists) {
+                        QrExists = true;
+                    }
+                    
+                    QrCodeMatrix.makeCode(qrText);
+    
+                    $("#demoQr").removeClass("invisible");
+                    $(".toBeInvisible").removeClass("invisible");
+    
+                    var canvas = document.querySelector("#demoQr canvas");
+                    var img = canvas.toDataURL("image/png");
+                    var filename = previewText + ".png";
+                    download(filename, img);
+                    $("#inputText").val('');
+                    $("#textpreview").val('');
+                    ShowHeaderAlert("Codul QR a fost generat cu success", "success");
+                } catch (e) {
+                    ShowHeaderAlert(e.message, "error");
+                }
+    
+    
+            });
+    
+        });
+        $("#btnClear").on("click", function (e) {   
+            e.preventDefault();
+            $("#demoQr").addClass("invisible");
+            $(".toBeInvisible").addClass("invisible");
+        });
+    </script>
+</body>
+</html>
+
+
+
